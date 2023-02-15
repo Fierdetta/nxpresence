@@ -4,7 +4,7 @@ import { useProxy } from "@vendetta/storage";
 import { General, Forms } from "@vendetta/ui/components";
 import { USER_AGENT } from "../lib/constants";
 
-const { ScrollView, Image } = General;
+const { ScrollView, RefreshControl, Image } = General;
 const { FormSection, FormRow, FormHint, FormDivider, FormInput, FormSwitchRow } = Forms;
 const Status = findByDisplayName("Status")
 
@@ -21,34 +21,45 @@ export default function Settings() {
     const [friend, setFriend] = React.useState(null)
     const [error, setError] = React.useState("")
 
-    React.useEffect(() => {
-        setFriend(null)
+    async function fetchFriend() {
+        try {
+            const headers = new Headers({
+                "Accept": "application/json",
+                "User-Agent": USER_AGENT
+            })
 
-        if (!storage.presenceApiUrl) return
+            const response = await fetch(storage.presenceApiUrl, { headers: headers })
 
-        const fetchFriend = async function () {
-            try {
-                const headers = new Headers({
-                    "Accept": "application/json",
-                    "User-Agent": USER_AGENT
-                })
+            if (!response.ok) throw new Error("No friend found")
 
-                const response = await fetch(storage.presenceApiUrl, { headers: headers })
+            const data = await response.json()
 
-                if (!response.ok) throw new Error("No friend found")
-
-                const data = await response.json()
-
-                setFriend(data.friend)
-            } catch (err) {
-                setError(err.message)
-            }
+            setFriend(data.friend)
+        } catch (err) {
+            setError(err.message)
+            setFriend(null)
         }
+    }
+
+    React.useEffect(() => {
+        if (!storage.presenceApiUrl) return
 
         fetchFriend()
     }, [storage.presenceApiUrl])
 
-    return (<ScrollView>
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = () => {
+        setRefreshing(true)
+        fetchFriend().then(() => setRefreshing(false))
+    }
+
+    return (<ScrollView
+        refreshControl={<RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+        />}
+    >
         <FormSection>
             {friend && <>
                 <FormRow
