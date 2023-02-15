@@ -78,10 +78,6 @@ export default function Settings() {
                             status={STATE_STATUS_MAPPING[friend.presence.state]}
                         />}
                 />
-                {(["ONLINE", "PLAYING"].includes(friend.presence.state) && !friend.presence.game.name) && <>
-                    <FormDivider />
-                    <FormHint style={{ paddingBottom: 8 }}>You're not sharing your presence/play activity with the presence server user, you'll need to change that in User Settings/Play Activity Settings or make the presence server user a best friend.</FormHint>
-                </>}
                 <FormDivider />
             </>}
             <FormInput
@@ -95,6 +91,7 @@ export default function Settings() {
                 title="Presence API URL"
             />
         </FormSection>
+        <FormHint>{"You must share your presence with the presence server user (\"Display online status to\" in Friend Settings)"}</FormHint>
         <FormSection title="Settings">
             <FormSwitchRow
                 label="Automatically connect to presence server"
