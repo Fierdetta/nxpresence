@@ -18,5 +18,8 @@
 				"react-native"
 			]
 		}
+	},
+	"dependencies": {
+		"event-source-polyfill": "^1.0.31"
 	}
 }
