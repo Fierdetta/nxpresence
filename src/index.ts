@@ -1,5 +1,5 @@
 import { storage } from "@vendetta/plugin";
-import Settings from "./components/Settings";
+import Settings from "./ui/pages/Settings";
 
 export default {
     onLoad: () => {

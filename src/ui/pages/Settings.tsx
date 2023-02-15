@@ -2,7 +2,7 @@ import { findByDisplayName } from "@vendetta/metro";
 import { storage } from "@vendetta/plugin";
 import { useProxy } from "@vendetta/storage";
 import { General, Forms } from "@vendetta/ui/components";
-import { USER_AGENT } from "../lib/constants";
+import { USER_AGENT } from "../../lib/constants";
 
 const { ScrollView, RefreshControl, Image } = General;
 const { FormSection, FormRow, FormHint, FormDivider, FormInput, FormSwitchRow } = Forms;
