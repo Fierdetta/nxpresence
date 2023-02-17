@@ -1,4 +1,4 @@
-import { findByDisplayName } from "@vendetta/metro";
+import { findByDisplayName, findByProps } from "@vendetta/metro";
 import { storage } from "@vendetta/plugin";
 import { useProxy } from "@vendetta/storage";
 import { General, Forms } from "@vendetta/ui/components";
@@ -14,6 +14,8 @@ const STATE_STATUS_MAPPING = {
     ONLINE: "online",
     PLAYING: "online"
 }
+
+const debounce = findByProps("debounce").debounce
 
 export default function Settings() {
     useProxy(storage);
@@ -41,12 +43,17 @@ export default function Settings() {
         }
     }
 
+    // Debounced for api url input
+    const debouncedFetchFriend = React.useCallback(debounce(fetchFriend, 200), [])
+
+    // Load on first open
     React.useEffect(() => {
         if (!storage.presenceApiUrl) return
 
         fetchFriend()
-    }, [storage.presenceApiUrl])
+    }, [])
 
+    // Refresh shit
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = () => {
@@ -85,9 +92,10 @@ export default function Settings() {
                 onChange={(v: string) => {
                     storage.presenceApiUrl = v
                     if (error) setError("")
+                    debouncedFetchFriend(v)
                 }}
                 error={error}
-                placeholder="https://nxapi-presence.fancy.org.uk/api/presence/5f6b0b4e201f2a7e"
+                placeholder="https://nx.catvibers.me/api/presence/5f6b0b4e201f2a7e"
                 title="Presence API URL"
             />
         </FormSection>
