@@ -14,19 +14,21 @@ export default {
             try {
                 presenceStream = setupNxapiPresenceStream()
             } catch (e) { }
-            // stop and start the stream when app state changes
-            ReactNative.AppState.addEventListener("change", (state) => {
-                if (state === "background") {
-                    if (presenceStream) {
-                        presenceStream.close()
-                        presenceStream = null
+            if (ReactNative.Platform.OS == "ios") {
+                // stop and start the stream when app state changes
+                ReactNative.AppState.addEventListener("change", (state) => {
+                    if (state === "background") {
+                        if (presenceStream) {
+                            presenceStream.close()
+                            presenceStream = null
+                        }
+                    } else if (state === "active") {
+                        try {
+                            presenceStream = setupNxapiPresenceStream()
+                        } catch (e) { }
                     }
-                } else if (state === "active") {
-                    try {
-                        presenceStream = setupNxapiPresenceStream()
-                    } catch (e) { }
-                }
-            })
+                })
+            }
         }
 
     },
