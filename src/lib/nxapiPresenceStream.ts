@@ -6,9 +6,9 @@ import { USER_AGENT } from './constants';
 const EventSource = NativeEventSource || EventSourcePolyfill;
 
 export function setupNxapiPresenceStream() {
-	const headers = new Headers({
+	const headers = {
 		"User-Agent": USER_AGENT
-	})
+	}
 
 	let presenceStream = new EventSource(storage.presenceApiUrl + "/events", { headers: headers })
 
