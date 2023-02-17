@@ -19,6 +19,7 @@ export default {
                 if (state === "background") {
                     if (presenceStream) {
                         presenceStream.close()
+                        presenceStream = null
                     }
                 } else if (state === "active") {
                     try {
@@ -32,6 +33,7 @@ export default {
     onUnload: () => {
         if (presenceStream) {
             presenceStream.close()
+            presenceStream = null
         }
     },
     settings: Settings,
