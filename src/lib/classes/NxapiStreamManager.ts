@@ -55,9 +55,14 @@ export default new class NxapiStreamManager {
 
         eventSource.addEventListener("error", (event) => {
             if (event.type === "error") {
-                logger.error("Connection error:", event.message);
+                if (event.xhrStatus === 200) {
+                    logger.info("Connection to presence server was lost");
+                } else {
+                    logger.error(`xhrStatus ${event.xhrStatus} encountered:`, event.message);
+                    showToast("Something went wrong with nxpresence, please check Debug Logs!", getAssetIDByName("Small"));
+                }
             } else if (event.type === "exception") {
-                logger.error("Error:", event.message, event.error);
+                logger.error("Exception:", event.message, event.error);
             }
         })
     }
