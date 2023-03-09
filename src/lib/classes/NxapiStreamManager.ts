@@ -1,6 +1,7 @@
 import { logger } from "@vendetta";
 import { showToast } from "@vendetta/ui/toasts";
 import EventSource from "react-native-sse";
+import { USER_AGENT } from "../constants";
 
 type NxapiEvents = "friend" | "title";
 
@@ -23,7 +24,7 @@ export default new class NxapiStreamManager {
 
         logger.info("Opening EventSource");
         
-        const eventSource = new EventSource<NxapiEvents>("https://nx.catvibers.me/api/presence/8178ef7b6a3153f0/events");
+        const eventSource = new EventSource<NxapiEvents>("https://nx.catvibers.me/api/presence/8178ef7b6a3153f0/events", { headers: { "User-Agent": USER_AGENT }});
         this.eventSource = eventSource;
 
         eventSource.addEventListener("open", (event) => {
