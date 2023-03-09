@@ -1,4 +1,6 @@
 import { logger } from "@vendetta";
+import { storage } from "@vendetta/plugin";
+import { getAssetIDByName } from "@vendetta/ui/assets";
 import { showToast } from "@vendetta/ui/toasts";
 import EventSource from "react-native-sse";
 import { USER_AGENT } from "../constants";
@@ -24,7 +26,7 @@ export default new class NxapiStreamManager {
 
         logger.info("Opening EventSource");
         
-        const eventSource = new EventSource<NxapiEvents>("https://nx.catvibers.me/api/presence/8178ef7b6a3153f0/events", { headers: { "User-Agent": USER_AGENT }});
+        const eventSource = new EventSource<NxapiEvents>(`${storage.presenceApiUrl}/events`, { headers: { "User-Agent": USER_AGENT }});
         this.eventSource = eventSource;
 
         eventSource.addEventListener("open", (event) => {
