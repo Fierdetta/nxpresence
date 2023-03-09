@@ -1,5 +1,5 @@
 import Settings from "./ui/pages/Settings";
-import NxapiStreamManager from "./lib/NxapiStreamManager";
+import NxapiStreamManager from "./lib/classes/NxapiStreamManager";
 
 export default {
     onLoad: () => {
