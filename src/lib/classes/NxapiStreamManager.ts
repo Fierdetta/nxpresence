@@ -59,4 +59,9 @@ export default new class NxapiStreamManager {
             }
         })
     }
+
+    stop() {
+        this.eventSource?.close();
+        this.eventSource = null;
+    }
 }
