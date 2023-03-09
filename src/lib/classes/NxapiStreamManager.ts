@@ -1,9 +1,13 @@
 import { logger } from "@vendetta";
+import { findByProps } from "@vendetta/metro";
+import { FluxDispatcher } from "@vendetta/metro/common";
 import { storage } from "@vendetta/plugin";
 import { getAssetIDByName } from "@vendetta/ui/assets";
 import { showToast } from "@vendetta/ui/toasts";
 import EventSource from "react-native-sse";
-import { USER_AGENT } from "../constants";
+import { USER_AGENT, APPLICATION_ID } from "../constants";
+
+const AssetManager = findByProps("getAssetIds");
 
 type NxapiEvents = "friend" | "title";
 
@@ -25,8 +29,8 @@ export default new class NxapiStreamManager {
         }
 
         logger.info("Opening EventSource");
-        
-        const eventSource = new EventSource<NxapiEvents>(`${storage.presenceApiUrl}/events`, { headers: { "User-Agent": USER_AGENT }});
+
+        const eventSource = new EventSource<NxapiEvents>(`${storage.presenceApiUrl}/events`, { headers: { "User-Agent": USER_AGENT } });
         this.eventSource = eventSource;
 
         eventSource.addEventListener("open", (event) => {
@@ -44,9 +48,8 @@ export default new class NxapiStreamManager {
             logger.verbose("Recieved title event");
             const title = JSON.parse(event.data) as Title | null;
 
-            if (title) {
-                showToast(title.name, { uri: title.image_url } as any as number);
-            };
+            // DEBUG: showToast(title.name, { uri: title.image_url } as any as number);
+            this.updateActivity(title);
         });
 
         eventSource.addEventListener("close", (event) => {
@@ -66,6 +69,30 @@ export default new class NxapiStreamManager {
             }
         })
     }
+
+    private async updateActivity(title: Title | null) {
+        let activity = null;
+    
+        if (title) {
+            activity = {
+                name: title.name,
+                flags: 0,
+                type: 0,
+                application_id: APPLICATION_ID,
+                timestamps: {
+                    start: new Date(title.since).getTime()
+                },
+                assets: {
+                    large_image: (await AssetManager.getAssetIds(APPLICATION_ID, [title.image_url]))[0]
+                }
+            }
+        }
+        
+        FluxDispatcher.dispatch({
+            type: "LOCAL_ACTIVITY_UPDATE",
+            activity: activity
+        });
+    };
 
     stop() {
         this.eventSource?.close();
