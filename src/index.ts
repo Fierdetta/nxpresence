@@ -1,5 +1,4 @@
-import { logger } from "@vendetta";
-import Settings from "./Settings";
+import Settings from "./ui/pages/Settings";
 import NxapiStreamManager from "./lib/NxapiStreamManager";
 
 export default {
