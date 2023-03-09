@@ -1,2 +1,2 @@
-# Vendetta Plugins Template
-This repo contains a template for creating [Vendetta](https://github.com/vendetta-mod/Vendetta) plugins.
+# nxpresence
+Show your Nintendo Switch presence on Discord.
